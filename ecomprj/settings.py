@@ -8,7 +8,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # مفاتيح الأمان
 SECRET_KEY = os.getenv('SECRET_KEY')  # تم نقله من الكود إلى .env
 DEBUG = True
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 # التطبيقات
 INSTALLED_APPS = [
