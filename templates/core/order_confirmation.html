@@ -1,0 +1,272 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<section class="breadcrumb-option">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcrumb__text">
+                    <h4 class="animate__animated animate__fadeInDown">Order Confirmation</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="checkout spad">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <!-- Animated Checkmark -->
+                <div class="text-center mb-5 animate__animated animate__zoomIn">
+                    <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                        <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
+                        <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+                    </svg>
+                </div>
+                
+                <!-- Confirmation Card -->
+                <div class="card confirmation-card animate__animated animate__fadeInUp">
+                    <div class="card-body p-5">
+                        <div class="text-center mb-4">
+                            <h3 class="fw-bold text-gradient-success">Order Confirmed!</h3>
+                            <p class="text-muted">Thank you for your purchase</p>
+                        </div>
+                        
+                        <div class="confirmation-details">
+                            <div class="detail-item">
+                                <span>Order Number</span>
+                                <strong>#{{ order.order_id }}</strong>
+                            </div>
+                            <div class="detail-item">
+                                <span>Confirmation Sent To</span>
+                                <strong>{{ request.user.email }}</strong>
+                            </div>
+                            <div class="detail-item">
+                                <span>Total Amount</span>
+                                <strong class="price">${{ order.total }}</strong>
+                            </div>
+                        </div>
+                        
+                        <div class="order-summary mt-5">
+                            <h5 class="summary-title">Order Summary</h5>
+                            <div class="items-list">
+                                {% for item in order.items.all %}
+                                <div class="item-row animate__animated animate__fadeInRight" style="animation-delay: {{ forloop.counter0|add:1 }}00ms">
+                                    <div class="item-info">
+                                        <span class="quantity">{{ item.quantity }}x</span>
+                                        <span class="product-name">{{ item.product.title }}</span>
+                                    </div>
+                                    <span class="item-price">${{ item.total_price }}</span>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        <div class="text-center mt-5">
+                            <a href="{% url 'core:index' %}" class="btn btn-primary btn-lg px-5">
+                                Continue Shopping
+                            </a>
+                            <a href="#" class="btn btn-outline-secondary btn-lg px-5 ms-3">
+                                View Orders
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    /* Animation Classes */
+    @keyframes scaleIn {
+        0% { transform: scale(0.8); opacity: 0; }
+        100% { transform: scale(1); opacity: 1; }
+    }
+    
+    @keyframes drawCircle {
+        0% { stroke-dashoffset: 166; }
+        100% { stroke-dashoffset: 0; }
+    }
+    
+    @keyframes drawCheck {
+        0% { stroke-dashoffset: 50; }
+        100% { stroke-dashoffset: 0; }
+    }
+    
+    /* Checkmark Styles */
+    .checkmark {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        display: block;
+        stroke-width: 4;
+        stroke: #4CAF50;
+        stroke-miterlimit: 10;
+        margin: 0 auto;
+        animation: scaleIn 0.3s ease-in-out;
+    }
+    
+    .checkmark__circle {
+        stroke-dasharray: 166;
+        stroke-dashoffset: 166;
+        animation: drawCircle 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+        fill: none;
+    }
+    
+    .checkmark__check {
+        transform-origin: 50% 50%;
+        stroke-dasharray: 50;
+        stroke-dashoffset: 50;
+        animation: drawCheck 0.4s cubic-bezier(0.65, 0, 0.45, 1) 0.6s forwards;
+    }
+    
+    /* Confirmation Card */
+    .confirmation-card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+        transition: transform 0.3s ease;
+    }
+    
+    .confirmation-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .text-gradient-success {
+        background: linear-gradient(45deg, #4CAF50, #8BC34A);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+    
+    /* Details List */
+    .confirmation-details {
+        background: #f9f9f9;
+        border-radius: 10px;
+        padding: 20px;
+    }
+    
+    .detail-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .detail-item:last-child {
+        border-bottom: none;
+    }
+    
+    .detail-item strong {
+        font-weight: 600;
+    }
+    
+    .price {
+        color: #4CAF50;
+        font-size: 1.2em;
+    }
+    
+    /* Order Summary */
+    .summary-title {
+        position: relative;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+        font-weight: 600;
+    }
+    
+    .summary-title::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 50px;
+        height: 3px;
+        background: linear-gradient(45deg, #4CAF50, #8BC34A);
+        border-radius: 3px;
+    }
+    
+    .items-list {
+        border: 1px solid #eee;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    
+    .item-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px;
+        background: white;
+        border-bottom: 1px solid #f5f5f5;
+        transition: all 0.3s ease;
+    }
+    
+    .item-row:last-child {
+        border-bottom: none;
+    }
+    
+    .item-row:hover {
+        background: #f9f9f9;
+        transform: translateX(5px);
+    }
+    
+    .item-info {
+        display: flex;
+        align-items: center;
+    }
+    
+    .quantity {
+        display: inline-block;
+        width: 25px;
+        height: 25px;
+        background: #4CAF50;
+        color: white;
+        border-radius: 50%;
+        text-align: center;
+        line-height: 25px;
+        margin-right: 15px;
+        font-size: 0.8em;
+    }
+    
+    .product-name {
+        font-weight: 500;
+    }
+    
+    .item-price {
+        font-weight: 600;
+        color: #333;
+    }
+    
+    /* Buttons */
+    .btn-primary {
+        background: linear-gradient(45deg, #4CAF50, #8BC34A);
+        border: none;
+        padding: 12px 30px;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+    }
+    
+    .btn-outline-secondary {
+        border: 2px solid #ddd;
+        padding: 12px 30px;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-outline-secondary:hover {
+        border-color: #4CAF50;
+        color: #4CAF50;
+        transform: translateY(-2px);
+    }
+</style>
+{% endblock %}

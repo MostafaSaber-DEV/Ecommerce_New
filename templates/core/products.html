@@ -1,0 +1,260 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="shop spad">
+    <div class="container">
+        <div class="row">
+            <!-- Sidebar Filters -->
+            <div class="col-lg-3">
+                <div class="shop__sidebar">
+                    <!-- Search Form -->
+                    <div class="shop__sidebar__search">
+                        <form action="#">
+                            <input type="text" placeholder="Search...">
+                            <button type="submit"><span class="icon_search"></span></button>
+                        </form>
+                    </div>
+
+                    <!-- Filter Accordion -->
+                    <div class="shop__sidebar__accordion">
+                        <div class="accordion" id="accordionExample">
+                            
+                            <!-- Categories Filter -->
+                            <div class="card">
+                                <div class="card-heading">
+                                    <a data-toggle="collapse" data-target="#collapseOne">Categories</a>
+                                </div>
+                                <div id="collapseOne" class="collapse show" data-parent="#accordionExample">
+                                    <div class="card-body">
+                                        <div class="shop__sidebar__categories">
+                                            <ul class="nice-scroll">
+                                                {% if categories %}
+                                                    {% for category in categories %}
+                                                        <li>
+                                                            <a href="{% url 'core:category_product' category.cid %}">
+                                                                {{ category.title }}
+                                                                <span class="badge">({{ category.product_count }})</span>
+                                                            </a>
+                                                        </li>
+                                                    {% endfor %}
+                                                {% else %}
+                                                    <li><a href="#">No categories available</a></li>
+                                                {% endif %}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Brand Filter -->
+
+
+
+                            <!-- Price Filter -->
+                            <div class="card">
+                                <div class="card-heading">
+                                    <a data-toggle="collapse" data-target="#collapseThree">Price</a>
+                                </div>
+                                <div id="collapseThree" class="collapse show" data-parent="#accordionExample">
+                                    <div class="card-body">
+                                        <div class="shop__sidebar__price">
+                                            <ul>
+                                                <li>
+                                                    <a href="?price=0-50{% if category_id %}&category={{ category_id }}{% endif %}{% if request.GET.tag %}&tag={{ request.GET.tag }}{% endif %}{% if request.GET.vendor %}&vendor={{ request.GET.vendor }}{% endif %}">
+                                                        $0.00 - $50.00
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="?price=50-100{% if category_id %}&category={{ category_id }}{% endif %}{% if request.GET.tag %}&tag={{ request.GET.tag }}{% endif %}{% if request.GET.vendor %}&vendor={{ request.GET.vendor }}{% endif %}">
+                                                        $50.00 - $100.00
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="?price=100-150{% if category_id %}&category={{ category_id }}{% endif %}{% if request.GET.tag %}&tag={{ request.GET.tag }}{% endif %}{% if request.GET.vendor %}&vendor={{ request.GET.vendor }}{% endif %}">
+                                                        $100.00 - $150.00
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="?price=150-200{% if category_id %}&category={{ category_id }}{% endif %}{% if request.GET.tag %}&tag={{ request.GET.tag }}{% endif %}{% if request.GET.vendor %}&vendor={{ request.GET.vendor }}{% endif %}">
+                                                        $150.00 - $200.00
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="?price=200-250{% if category_id %}&category={{ category_id }}{% endif %}{% if request.GET.tag %}&tag={{ request.GET.tag }}{% endif %}{% if request.GET.vendor %}&vendor={{ request.GET.vendor }}{% endif %}">
+                                                        $200.00 - $250.00
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="?price=250-{% if category_id %}&category={{ category_id }}{% endif %}{% if request.GET.tag %}&tag={{ request.GET.tag }}{% endif %}{% if request.GET.vendor %}&vendor={{ request.GET.vendor }}{% endif %}">
+                                                        $250.00+
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Size Filter -->
+
+
+
+
+                            <!-- Tags Filter -->
+                            <div class="card">
+                                <div class="card-heading">
+                                    <a data-toggle="collapse" data-target="#collapseSix">Tags</a>
+                                </div>
+                                <div id="collapseSix" class="collapse show" data-parent="#accordionExample">
+                                    <div class="card-body">
+                                        <div class="shop__sidebar__tags">
+                                            {% if tags %}
+                                                {% for tag in tags %}
+                                                    <a href="?tag={{ tag.slug }}" class="badge bg-dark text-white me-1 mb-1">{{ tag.name }}</a>
+                                                {% endfor %}
+                                            {% else %}
+                                                <p class="text-muted">No tags available.</p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Product Listing -->
+            <div class="col-lg-9">
+                <!-- Product Options Bar -->
+                <div class="shop__product__option">
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6 col-sm-6">
+                            <div class="shop__product__option__left">
+                                <p>Showing {{ products.paginator.count }} results</p>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-6">
+                            <div class="shop__product__option__right">
+                                <form method="get" id="typeFilterForm">
+                                    <p>Sort by Type:</p>
+                                    <select name="type" onchange="document.getElementById('typeFilterForm').submit();">
+                                        <option value="">All Types</option>
+                                        {% for value, label in type_options %}
+                                            <option value="{{ value }}" {% if request.GET.type == value %}selected{% endif %}>{{ label }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Grid -->
+                <div class="row">
+                    {% for product in products %}
+                        <div class="col-lg-4 col-md-6 col-sm-6">
+                            <div class="product__item {% if product.is_on_sale %}sale{% endif %}">
+                                <div class="product__item__pic set-bg" data-setbg="{% if product.image %}{{ product.image.url }}{% else %}{% static 'img/product/default.jpg' %}{% endif %}">
+                                    {% if product.is_on_sale %}
+                                        <span class="label label-sale">Sale</span>
+                                    {% elif product.is_new %}
+                                        <span class="label label-new">New</span>
+                                    {% endif %}
+                                    {% if product.is_featured %}
+                                        <span class="label label-featured">Featured</span>
+                                    {% endif %}
+                                    {% if product.is_best_seller %}
+                                        <span class="label label-bestseller">Best Seller</span>
+                                    {% endif %}
+                                    {% if product.is_verified %}
+                                        <span class="label label-verified">Verified</span>
+                                    {% endif %}
+                                    {% if product.old_price and product.old_price > product.price %}
+                                        <span class="label label-discount">Discount</span>
+                                    {% endif %}
+                                    
+                                    <ul class="product__hover">
+                                        <li>
+                                            {% if user.is_authenticated %}
+                                                {% if product.id in wishlist_product_ids %}
+                                                    <a href="{% url 'core:remove_from_wishlist' product.id %}" title="Remove from Wishlist">
+                                                        <i class="fa fa-heart" style="color:#e74c3c; font-size:22px;"></i>
+                                                    </a>
+                                                {% else %}
+                                                    <a href="{% url 'core:add_to_wishlist' product.id %}" title="Add to Wishlist">
+                                                        <i class="fa fa-heart-o" style="color:#888; font-size:22px;"></i>
+                                                    </a>
+                                                {% endif %}
+                                            {% else %}
+                                                <a href="{% url 'login' %}" title="Login to use Wishlist">
+                                                    <i class="fa fa-heart-o" style="color:#888; font-size:22px;"></i>
+                                                </a>
+                                            {% endif %}
+                                        </li>
+                                        <li><a href="#"><img src="{% static 'img/icon/compare.png' %}" alt=""> <span>Compare</span></a></li>
+                                        <li><a href="#"><img src="{% static 'img/icon/search.png' %}" alt=""></a></li>
+                                    </ul>
+                                </div>
+                                <div class="product__item__text">
+                                    <h6>{{ product.title }}</h6>
+                                    <a href="{% url 'core:product_details' product.pid %}" class="view-cart-btn">
+                                        <i class="fa fa-eye"></i> View Details
+                                    </a>
+                                    <div class="rating">
+                                        {% for i in "12345" %}
+                                            {% if forloop.counter <= product.rating|default:0 %}
+                                                <i class="fa fa-star"></i>
+                                            {% else %}
+                                                <i class="fa fa-star-o"></i>
+                                            {% endif %}
+                                        {% endfor %}
+                                        <span> - {{ product.reviews.count }} تقييم</span>
+                                    </div>
+                                    <h5>
+                                        ${{ product.price }}
+                                        {% if product.old_price and product.old_price > product.price %}
+                                            <span style="color:#b7b7b7;font-size:16px;text-decoration:line-through;margin-left:8px;">${{ product.old_price }}</span>
+                                        {% endif %}
+                                    </h5>
+                                    <div class="product__color__select">
+                                        <label><input type="radio"></label>
+                                        <label class="active black"><input type="radio"></label>
+                                        <label class="grey"><input type="radio"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="col-12">
+                            <p class="text-muted">No products found for this category.</p>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Pagination -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="product__pagination">
+                            {% if products.has_previous %}
+                                <a href="?page={{ products.previous_page_number }}{% if category_id %}&category={{ category_id }}{% endif %}">&laquo;</a>
+                            {% endif %}
+                            {% for num in products.paginator.page_range %}
+                                {% if products.number == num %}
+                                    <a class="active" href="?page={{ num }}{% if category_id %}&category={{ category_id }}{% endif %}">{{ num }}</a>
+                                {% elif num > products.number|add:'-3' and num < products.number|add:'3' %}
+                                    <a href="?page={{ num }}{% if category_id %}&category={{ category_id }}{% endif %}">{{ num }}</a>
+                                {% endif %}
+                            {% endfor %}
+                            {% if products.has_next %}
+                                <a href="?page={{ products.next_page_number }}{% if category_id %}&category={{ category_id }}{% endif %}">&raquo;</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

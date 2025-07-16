@@ -1,0 +1,452 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="product__details__pic">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3 col-md-3">
+                <ul class="nav nav-tabs" role="tablist">
+                    <!-- Main Image -->
+                    <li class="nav-item">
+                        <a class="nav-link active" data-toggle="tab" href="#tabs-1" role="tab">
+                            <div class="product__thumb__pic set-bg" data-setbg="{{ product.image.url }}"></div>
+                        </a>
+                    </li>
+                    <!-- Additional Images -->
+                    {% for image in additional_images %}
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#tabs-{{ forloop.counter|add:1 }}" role="tab">
+                            <div class="product__thumb__pic set-bg" data-setbg="{{ image.image.url }}"></div>
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="col-lg-6 col-md-9">
+                <div class="tab-content">
+                    <!-- Main Image -->
+                    <div class="tab-pane active" id="tabs-1" role="tabpanel">
+                        <div class="product__details__pic__item" style="width: 100%; max-width: 800px; margin: 0 auto;">
+                            <img src="{{ product.image.url }}" alt="{{ product.title }}" style="width: 100%; height: auto; max-height: 600px; object-fit: contain;">
+                        </div>
+                    </div>
+                    <!-- Additional Images -->
+                    {% for image in additional_images %}
+                    <div class="tab-pane" id="tabs-{{ forloop.counter|add:1 }}" role="tabpanel">
+                        <div class="product__details__pic__item" style="width: 100%; max-width: 800px; margin: 0 auto;">
+                            <img src="{{ image.image.url }}" alt="{{ product.title }} - Image {{ forloop.counter }}" style="width: 100%; height: auto; max-height: 600px; object-fit: contain;">
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="product__details__content">
+    <div class="container">
+        <div class="row d-flex justify-content-center">
+            <div class="col-lg-8">
+                <div class="product__details__text">
+                    <h4>{{ product.title }}</h4>
+                    <div class="rating">
+                        {% for i in "12345" %}
+                            {% if forloop.counter <= product.rating|default:0 %}
+                                <i class="fa fa-star"></i>
+                            {% else %}
+                                <i class="fa fa-star-o"></i>
+                            {% endif %}
+                        {% endfor %}
+                        <span> - {{ product.reviews.count }} تقييم</span>
+                    </div>
+                    <h3>${{ product.price }} {% if product.old_price %}<span>${{ product.old_price }}</span>{% endif %}</h3>
+                    <p>{{ product.description|safe }}</p>
+                    
+                    <form id="add-to-cart-form" method="POST" action="{% url 'core:add_to_cart' product.pid %}">
+                        {% csrf_token %}
+                        <div class="product__details__option">
+                            <div class="product__details__option__size">
+                                <span>Size:</span>
+                                {% for size in product.sizes.all %}
+                                    <label for="size-{{ size.id }}">{{ size.name }}
+                                        <input type="radio" id="size-{{ size.id }}" name="size" value="{{ size.name }}" {% if forloop.first %}checked{% endif %}>
+                                    </label>
+                                {% empty %}
+                                    <span class="text-danger">لا يوجد مقاسات متاحة لهذا المنتج</span>
+                                {% endfor %}
+                            </div>
+                            <div class="product__details__option__color">
+                                <span>Color:</span>
+                                <div style="display:flex;gap:10px;align-items:center;">
+                                {% for color in product.colors.all %}
+                                    <label style="display:inline-block;cursor:pointer;position:relative;">
+                                        <input type="radio" name="color" value="{{ color.name }}|{{ color.hex_code }}" style="display:none;">
+                                        <span title="{{ color.name }}" style="display:inline-block;width:28px;height:28px;border-radius:50%;border:2.5px solid #eee;vertical-align:middle;background:{{ color.hex_code|default:'#ccc' }};transition:0.2s;"></span>
+                                    </label>
+                                {% empty %}
+                                    <span class="text-danger">لا يوجد ألوان متاحة لهذا المنتج</span>
+                                {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="product__details__cart__option">
+                            <div class="quantity">
+                                <div class="pro-qty">
+                                    <span class="dec qtybtn">-</span>
+                                    <input type="number" value="1" min="1" max="99" id="product-quantity" name="quantity">
+                                    <span class="inc qtybtn">+</span>
+                                </div>
+                            </div>
+                            <button type="submit" class="primary-btn">
+                                <i class="fa fa-shopping-cart"></i> Add to Cart
+                            </button>
+                        </div>
+                    </form>
+                    
+
+                    
+                    <div class="product__details__last__option">
+
+                        <ul>
+                            <li><span>SKU:</span> {{ product.sku }}</li>
+                            <li><span>Categories:</span> {{ product.category }}</li>
+                            <li><span>Tags:</span>
+                                {% for tag in product.tags.all %}
+                                    <a href="{% url 'core:tag_products' tag.slug %}" class="badge badge-secondary">
+                                        {{ tag.name }}
+                                    </a>{% if not forloop.last %}, {% endif %}
+                                {% empty %}
+                                    No tags
+                                {% endfor %}
+                            </li>
+                            <li><span>Availability:</span> {{ product.stock_quantity }}</li>
+                            <li><span>Brand:</span> {{ product.vendor.name }}</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if can_review %}
+<div class="card my-4" style="max-width:600px;margin:auto;">
+  <div class="card-body">
+    <h5 class="card-title mb-3">قيّم هذا المنتج</h5>
+    <form method="POST" action="{% url 'core:add_product_review' product.pid %}" id="review-form">
+      {% csrf_token %}
+      <div class="mb-3">
+        <label class="form-label">التقييم:</label><br>
+        <div class="star-rating" style="font-size: 2em; direction: ltr;">
+          {% for i in "54321" %}
+            <input type="radio" id="star{{ i }}" name="rating" value="{{ i }}" style="display:none;">
+            <label for="star{{ i }}" class="star-label" data-value="{{ i }}" style="color:#ccc;cursor:pointer;">
+              <i class="fa fa-star"></i>
+            </label>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">تعليق (اختياري):</label>
+        <textarea name="comment" class="form-control" rows="2" placeholder="اكتب رأيك عن المنتج..."></textarea>
+      </div>
+      <button type="submit" class="btn btn-success">إرسال التقييم</button>
+    </form>
+  </div>
+</div>
+<style>
+.star-rating .star-label i { transition: color 0.2s; }
+.star-rating .star-label.selected i,
+.star-rating .star-label.hovered i { color: #f7941d !important; }
+</style>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const stars = document.querySelectorAll('.star-rating .star-label');
+  let selected = 0;
+  stars.forEach(function(star, idx) {
+    star.addEventListener('mouseenter', function() {
+      highlightStars(idx);
+    });
+    star.addEventListener('mouseleave', function() {
+      highlightStars(selected - 1);
+    });
+    star.addEventListener('click', function() {
+      selected = idx + 1;
+      document.getElementById('star' + (5 - idx)).checked = true;
+      highlightStars(idx);
+    });
+  });
+  function highlightStars(idx) {
+    stars.forEach(function(star, i) {
+      if (i <= idx) {
+        star.classList.add('selected');
+      } else {
+        star.classList.remove('selected');
+      }
+    });
+  }
+});
+</script>
+{% elif not user.is_authenticated %}
+<div class="alert alert-info text-center my-4" style="max-width:600px;margin:auto;">يجب <a href="/login/">تسجيل الدخول</a> لتقييم المنتج.</div>
+{% endif %}
+
+<!-- Related Products Section -->
+<section class="related spad">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <h3 class="related-title">Related Products</h3>
+            </div>
+        </div>
+        <div class="row">
+            {% for product in related_products %}
+            <div class="col-lg-3 col-md-6 col-sm-6 col-sm-6">
+                <div class="product__item">
+                    {% if product.image %}
+                    <div class="product__item__pic set-bg" data-setbg="{{ product.image.url }}">
+                    {% else %}
+                    <div class="product__item__pic set-bg" data-setbg="{% static 'img/product/default.jpg' %}">
+                    {% endif %}
+                        <span class="label">New</span>
+                        <ul class="product__hover">
+                            <li><a href="#"><img src="{% static 'img/icon/heart.png' %}" alt="Wishlist"></a></li>
+                            <li><a href="#"><img src="{% static 'img/icon/compare.png' %}" alt="Compare"> <span>Compare</span></a></li>
+                            <li><a href="#"><img src="{% static 'img/icon/search.png' %}" alt="Quick View"></a></li>
+                        </ul>
+                    </div>
+                    <div class="product__item__text">
+                        <h6>{{ product.title }}</h6>
+                        <a href="{% url 'core:product_details' product.pid %}" class="view-cart-btn">
+                            <i class="fa fa-eye"></i> View Details
+                        </a>
+                        <div class="rating">
+                            <i class="fa fa-star-o"></i>
+                            <i class="fa fa-star-o"></i>
+                            <i class="fa fa-star-o"></i>
+                            <i class="fa fa-star-o"></i>
+                            <i class="fa fa-star-o"></i>
+                        </div>
+                        <h5>${{ product.price }}</h5>
+                        <div class="product__color__select">
+                            <label for="pc-1">
+                                <input type="radio" id="pc-1">
+                            </label>
+                            <label class="active black" for="pc-2">
+                                <input type="radio" id="pc-2">
+                            </label>
+                            <label class="grey" for="pc-3">
+                                <input type="radio" id="pc-3">
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <div class="alert alert-warning text-center py-5" style="border: 2px dashed #ff0707; background-color: #fffbea;">
+                    <img src="{% static 'img/icon/oops.png' %}" alt="No Products" style="width: 180px; margin-bottom: 20px;">
+                    <h4 class="fw-bold text-dark">Oops! No related products found.</h4>
+                    <p class="text-muted">We couldn't find any similar items right now. Check back later or explore other categories.</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<style>
+    /* Enhanced Add to Cart Button Styles */
+    .btn-add-to-cart {
+        background-color: #7fad39;
+        color: white;
+        padding: 12px 30px;
+        border-radius: 4px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        border: none;
+        cursor: pointer;
+    }
+    
+    .btn-add-to-cart:hover {
+        background-color: #6b9a32 !important;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .btn-add-to-cart:active {
+        transform: translateY(0);
+    }
+    
+    /* Quantity Selector Styles */
+    .pro-qty {
+        display: flex;
+        align-items: center;
+        margin-right: 15px;
+    }
+    
+    .pro-qty .qtybtn {
+        cursor: pointer;
+        font-size: 16px;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #e1e1e1;
+        user-select: none;
+        background: #f5f5f5;
+    }
+    
+    .pro-qty input {
+        width: 50px;
+        height: 30px;
+        text-align: center;
+        border: 1px solid #e1e1e1;
+        border-left: none;
+        border-right: none;
+        -moz-appearance: textfield;
+    }
+    
+    .pro-qty input::-webkit-outer-spin-button,
+    .pro-qty input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    
+    /* Product Options Styles */
+    .product__details__option__size label,
+    .product__details__option__color label {
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    
+    .product__details__option__size label:hover,
+    .product__details__option__color label:hover {
+        opacity: 0.8;
+    }
+</style>
+
+<!-- Toast Notification -->
+<div id="toast" class="toast-notification"></div>
+
+<script>
+function showToast(message, isError = false) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.className = 'toast-notification' + (isError ? ' error' : '');
+    toast.classList.add('show');
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 3000);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // كود زيادة/تقليل الكمية
+    document.querySelectorAll('.qtybtn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var input = this.parentElement.querySelector('input');
+            var currentVal = parseInt(input.value);
+            if (this.classList.contains('inc')) {
+                input.value = currentVal < 99 ? currentVal + 1 : 99;
+            } else {
+                input.value = currentVal > 1 ? currentVal - 1 : 1;
+            }
+        });
+    });
+
+    // كود إضافة للسلة
+    document.querySelector('form#add-to-cart-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const form = this;
+        const btn = form.querySelector('button[type="submit"]');
+        const formData = new FormData(form);
+        btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> جاري الإضافة...';
+        btn.disabled = true;
+        btn.classList.add('loading');
+        fetch(form.action, {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+            },
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.success) {
+                btn.innerHTML = '<i class="fa fa-check"></i> تمت الإضافة!';
+                showToast(data.message || 'تمت الإضافة إلى السلة بنجاح');
+                setTimeout(() => {
+                    btn.innerHTML = '<i class="fa fa-shopping-cart"></i> Add to Cart';
+                    btn.disabled = false;
+                    btn.classList.remove('loading');
+                }, 2000);
+            } else {
+                showToast(data.message || 'حدث خطأ أثناء الإضافة', true);
+                btn.classList.remove('loading');
+                btn.disabled = false;
+            }
+        })
+        .catch(() => {
+            showToast('حدث خطأ غير متوقع', true);
+            btn.classList.remove('loading');
+            btn.disabled = false;
+        });
+    });
+
+    // تمييز اللون المختار
+    const colorInputs = document.querySelectorAll('input[name="color"]');
+    colorInputs.forEach(function(input) {
+        input.addEventListener('change', function() {
+            colorInputs.forEach(function(i) {
+                i.nextElementSibling.style.borderColor = '#eee';
+            });
+            if(this.checked) {
+                this.nextElementSibling.style.borderColor = '#7fad39';
+            }
+        });
+        // تمييز أول لون افتراضيًا
+        if(input.checked) {
+            input.nextElementSibling.style.borderColor = '#7fad39';
+        }
+    });
+});
+</script>
+
+<style>
+.toast-notification {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 15px 25px;
+    background: #7fad39;
+    color: white;
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 1000;
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+.toast-notification.show {
+    transform: translateY(0);
+    opacity: 1;
+}
+.toast-notification.error {
+    background: #f44336;
+}
+.btn-add-to-cart.loading {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+</style>
+
+{% endblock %}

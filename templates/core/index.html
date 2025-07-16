@@ -1,0 +1,157 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block content %}
+
+    <!-- Hero Section Begin -->
+    <section class="hero">
+        <div class="hero__slider owl-carousel">
+            <div class="hero__items set-bg" data-setbg="{% static 'img/hero/hero-1.jpg' %}">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-xl-5 col-lg-7 col-md-8">
+                            <div class="hero__text">
+                                <h6>{{ brand.title }}</h6>
+                                <h2>{{ brand.name }}</h2>
+                                <p>{{ brand.description }}</p>
+                                <a href="{% url 'core:product_list_view' %}" class="primary-btn">Shop now <span class="arrow_right"></span></a>
+                                <div class="hero__social">
+                                    <a href="#"><i class="fa fa-facebook"></i></a>
+                                    <a href="#"><i class="fa fa-twitter"></i></a>
+                                    <a href="#"><i class="fa fa-pinterest"></i></a>
+                                    <a href="#"><i class="fa fa-instagram"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="hero__items set-bg" data-setbg="{% static 'img/hero/hero-2.jpg' %}">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-xl-5 col-lg-7 col-md-8">
+                            <div class="hero__text">
+                                <h6>{{ brand.title }}</h6>
+                                <h2>{{ brand.name }}</h2>
+                                <p>{{ brand.description }}</p>
+                                <a href="{% url 'core:product_list_view' %}" class="primary-btn">Shop now <span class="arrow_right"></span></a>
+                                <div class="hero__social">
+                                    <a href="#"><i class="fa fa-facebook"></i></a>
+                                    <a href="#"><i class="fa fa-twitter"></i></a>
+                                    <a href="#"><i class="fa fa-pinterest"></i></a>
+                                    <a href="#"><i class="fa fa-instagram"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                 {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                    </div>
+                {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </section>
+    <!-- Hero Section End -->
+
+    <!-- Banner Section Begin -->
+<section class="banner spad">
+    <div class="container">
+        <div class="row">
+            <!-- Clothing -->
+            <div class="col-lg-7 offset-lg-4">
+                <div class="banner__item">
+                    <div class="banner__item__pic">
+                        <img src="{% static 'img/banner/banner-1.jpg' %}" alt="">
+                    </div>
+                    <div class="banner__item__text">
+                        <h2>{{ clothing.title }}</h2>
+                        <a href="{% url 'core:category_product' clothing.cid %}">Shop now</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Accessories -->
+            <div class="col-lg-5">
+                <div class="banner__item banner__item--middle">
+                    <div class="banner__item__pic">
+                        <img src="{% static 'img/banner/banner-2.jpg' %}" alt="">
+                    </div>
+                    <div class="banner__item__text">
+                        <h2>{{ accessories.title }}</h2>
+                        <a href="{% url 'core:category_product' accessories.cid %}">Shop now</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Shoes -->
+            <div class="col-lg-7">
+                <div class="banner__item banner__item--last">
+                    <div class="banner__item__pic">
+                        <img src="{% static 'img/banner/banner-3.jpg' %}" alt="">
+                    </div>
+                    <div class="banner__item__text">
+                        <h2>{{ shoes.title }}</h2>
+                        <a href="{% url 'core:category_product' shoes.cid %}">Shop now</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+    <!-- Banner Section End -->
+
+    <!-- Product Section Begin -->
+    <section class="product spad">
+        <div class="container">
+            <h3 class="section-title">New Collection</h3>
+<div class="row product__filter">
+    {% for product in products|slice:":8" %}
+    <div class="col-lg-3 col-md-6 col-sm-6 mix new-arrivals">
+        <div class="product__item">
+            {% if product.image %}
+            <div class="product__item__pic set-bg" data-setbg="{{ product.image.url }}">
+            {% else %}
+            <div class="product__item__pic set-bg" data-setbg="{% static 'img/product/default.jpg' %}">
+            {% endif %}
+                <span class="label">NEW</span>
+                <ul class="product__hover">
+                    <li><a href="#"><img src="{% static 'img/icon/heart.png' %}" alt=""></a></li>
+                    <li><a href="#"><img src="{% static 'img/icon/compare.png' %}" alt=""> <span>Compare</span></a></li>
+                    <li><a href="#"><img src="{% static 'img/icon/search.png' %}" alt=""></a></li>
+                </ul>
+            </div>
+            <div class="product__item__text">
+                <h6>{{ product.title }}</h6>
+   <a href="{% url 'core:product_details' product.pid %}" class="view-cart-btn">
+        <i class="fa fa-eye"></i> View Details
+    </a>
+<div class="rating">
+    {% for i in "12345" %}
+        {% if forloop.counter <= product.rating|default:0 %}
+            <i class="fa fa-star"></i>
+        {% else %}
+            <i class="fa fa-star-o"></i>
+        {% endif %}
+    {% endfor %}
+    <span> - {{ product.reviews.count }} تقييم</span>
+</div>
+<h5>EGP {{ product.price }}</h5>
+
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+<div class="text-center mt-4">
+    <a href="{% url 'core:product_list_view' %}" class="btn btn-primary btn-lg" style="padding: 10px 32px; font-size: 1.1rem; border-radius: 30px;">
+        View All New Collection
+    </a>
+</div>
+
+
+{% endblock %}

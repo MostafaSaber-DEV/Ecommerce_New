@@ -1,0 +1,46 @@
+{% extends 'admin/base_site.html' %}
+{% load static %}
+{% block content %}
+<h1>تقرير العملاء والمنتجات المشتراة</h1>
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>اسم العميل</th>
+            <th>البريد الإلكتروني</th>
+            <th>رقم الهاتف</th>
+            <th>المنتجات المشتراة</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user in customers %}
+        <tr>
+            <td>{{ user.get_full_name|default:user.username }}</td>
+            <td>{{ user.email }}</td>
+            <td>{% if user.customer %}{{ user.customer.phone }}{% else %}-{% endif %}</td>
+            <td>
+                {% for order in user.orders.all %}
+                    <div style="margin-bottom: 10px; border-bottom: 1px solid #eee;">
+                        <b>طلب رقم:</b> {{ order.order_id }}<br>
+                        <ul style="margin-bottom: 0;">
+                        {% for item in order.items.all %}
+                            <li style="margin-bottom: 5px;">
+                                {% if item.product.image %}
+                                    <img src="{{ item.product.image.url }}" width="40" height="40" style="object-fit:cover;vertical-align:middle;" />
+                                {% endif %}
+                                <b>{{ item.product.title }}</b>
+                                (الكمية: {{ item.quantity }}, السعر: {{ item.price }})
+                            </li>
+                        {% empty %}
+                            <li>لا يوجد منتجات في هذا الطلب</li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                {% empty %}
+                    <span>لا يوجد طلبات</span>
+                {% endfor %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %} 

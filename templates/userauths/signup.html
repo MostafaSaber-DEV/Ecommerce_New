@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+
+<style>
+/* تنسيق الحاوية */
+.styled-form {
+    max-width: 500px;
+    margin: 0 auto;
+    margin-top: 30px;
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* تنسيق العناوين */
+.styled-form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #2c3e50;
+}
+h1 {
+    text-align: center;
+    color: #34495e;
+    margin-bottom: 20px;
+}
+.form-header p {
+    text-align: center;
+    color: #7f8c8d;
+    margin-bottom: 20px;
+}
+/* تنسيق الحقول */
+.styled-form input,
+.styled-form select,
+.styled-form textarea {
+    width: 95%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    font-size: 16px;
+    transition: 0.3s ease;
+}
+
+.styled-form input:focus,
+.styled-form select:focus,
+.styled-form textarea:focus {
+    border-color: #3498db;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+}
+
+/* تنسيق زر الإرسال */
+.submit-btn {
+    width: 100%;
+    padding: 14px;
+    background: #e74c3c;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.submit-btn:hover {
+    background: #c0392b;
+    transform: translateY(-2px);
+}
+
+/* تنسيق رسائل الخطأ */
+.styled-form .errorlist {
+    margin-top: -10px;
+    margin-bottom: 15px;
+    color: #e74c3c;
+    font-size: 14px;
+    list-style: none;
+    padding: 0;
+}
+</style>
+<body>
+    
+  <form method="post" class="styled-form">
+        {% csrf_token %}
+
+    <h1>Signup Form</h1>
+    <div class="form-header">
+            <p class="description">Please fill in this form to create an account.</p>
+    </div>
+    {{ form.as_p }}
+    <button type="submit" class="submit-btn">Signup</button>
+  </form>
+
+  {% if form.errors %}
+    <ul class="errorlist">
+      {% for field in form %}
+        {% for error in field.errors %}
+          <li>{{ error }}</li>
+        {% endfor %}
+      {% endfor %}
+      {% for error in form.non_field_errors %}
+        <li>{{ error }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+</body>
+</html>

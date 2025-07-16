@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        /* نسخنا نفس التنسيقات السابقة */
+        .styled-form {
+            max-width: 500px;
+            margin: 0 auto;
+            margin-top: 30px;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .styled-form label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .styled-form input {
+            width: 95%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 12px;
+            font-size: 16px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: #3498db;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .submit-btn:hover {
+            background: #2980b9;
+        }
+
+        .errorlist {
+            margin-top: -10px;
+            margin-bottom: 15px;
+            color: #e74c3c;
+            font-size: 14px;
+            list-style: none;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            color: #34495e;
+            margin-bottom: 20px;
+        }
+
+        .form-header p {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <form method="POST" class="styled-form">
+        {% csrf_token %}
+        <h1>Login</h1>
+        <div class="form-header">
+            <p class="description">Please enter your credentials to log in.</p>
+        </div>
+
+        <div>
+            {{ form.email.label_tag }}
+            {{ form.email }}
+            {% if form.email.errors %}
+                <ul class="errorlist">
+                    {% for error in form.email.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+
+        <div>
+            {{ form.password.label_tag }}
+            {{ form.password }}
+            {% if form.password.errors %}
+                <ul class="errorlist">
+                    {% for error in form.password.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+
+        <button type="submit" class="submit-btn">Login</button>
+
+        {% if form.non_field_errors %}
+            <ul class="errorlist">
+                {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </form>
+
+</body>
+</html>

@@ -1,0 +1,366 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block content %}
+<!-- Breadcrumb Section Begin -->
+<section class="breadcrumb-option">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcrumb__text">
+                    <h4>Shopping Cart</h4>
+                    <div class="breadcrumb__links">
+                        <a href="{% url 'core:index' %}">Home</a>
+                        <span>Shopping Cart</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Breadcrumb Section End -->
+
+<!-- Shopping Cart Section Begin -->
+<section class="shopping-cart spad">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="shopping__cart__table">
+                    {% if cart_items %}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Quantity</th>
+                                <th>Price</th>
+                                <th>Total</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in cart_items %}
+                            <tr data-item-id="{{ item.id }}">
+                                <td class="product__cart__item">
+                                    <div class="product__cart__item__pic">
+                                        <img src="{{ item.product.image.url }}" alt="{{ item.product.title }}" style="width: 90px; height: 90px; object-fit: cover;">
+                                    </div>
+                                    <div class="product__cart__item__text">
+                                        <h6>{{ item.product.title }}</h6>
+                                        {% if item.color_hex or item.color_name %}
+                                            <div style="font-size:14px;color:#555;">
+                                                {% if item.color_hex %}<span style="margin-right:8px;">اللون: <span style="display:inline-block;width:16px;height:16px;border-radius:50%;background:{{ item.color_hex|default:'#ccc' }};border:1px solid #eee;vertical-align:middle;"></span> {% if item.color_name %}{{ item.color_name }}{% endif %}</span>{% endif %}
+                                                {% if item.size %}<span>المقاس: {{ item.size }}</span>{% endif %}
+                                            </div>
+                                        {% endif %}
+                                        <h5>${{ item.product.price }}</h5>
+                                    </div>
+                                </td>
+                                <td class="quantity__item">
+                                    <div class="quantity">
+                                        <input type="number" 
+                                               value="{{ item.quantity }}" 
+                                               min="1"
+                                               max="{{ item.product.stock_quantity }}"
+                                               data-item-id="{{ item.id }}"
+                                               class="quantity-input"
+                                               style="width: 80px; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                                        {% if item.quantity > item.product.stock_quantity %}
+                                        <small class="text-danger">Only {{ item.product.stock_quantity }} available</small>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                                <td class="cart__price">${{ item.product.price }}</td>
+                                <td class="cart__price item-total">${{ item.total_price }}</td>
+                                <td class="cart__close">
+                                    <i class="fa fa-close remove-item" data-item-id="{{ item.id }}"></i>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <div class="alert alert-info text-center py-5">
+                        <i class="fa fa-shopping-cart fa-3x mb-3"></i>
+                        <h4>Your cart is empty</h4>
+                        <p>Start shopping to add products to your cart</p>
+                        <a href="{% url 'core:product_list_view' %}" class="primary-btn">Continue Shopping</a>
+                    </div>
+                    {% endif %}
+                </div>
+                {% if cart_items %}
+                <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="continue__btn">
+                            <a href="{% url 'core:product_list_view' %}" class="primary-btn">Continue Shopping</a>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="continue__btn update__btn">
+                            <a href="#" id="update-cart" class="primary-btn">
+                                <span class="btn-text">Update Cart</span>
+                                <span class="loading-spinner" style="display:none;">
+                                    <i class="fa fa-spinner fa-spin"></i>
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            {% if cart_items %}
+            <div class="col-lg-4">
+                <div class="cart__discount">
+                    <h6>Coupon Codes</h6>
+                    <form action="{% url 'core:apply_coupon' %}" method="POST" class="cart__discount__form">
+                        {% csrf_token %}
+                        <input type="text" name="code" placeholder="Coupon code" value="{{ coupon.code|default:'' }}">
+                        <button type="submit" class="site-btn">Apply</button>
+                    </form>
+                    {% if request.session.coupon_error %}
+                        <div class="alert alert-danger mt-2">{{ request.session.coupon_error }}</div>
+                        {% with request.session.coupon_error as _ %}{% templatetag opencomment %} clear error {% templatetag closecomment %}{% endwith %}
+                    {% endif %}
+                    {% if coupon %}
+                        <div class="alert alert-success mt-2">Coupon <b>{{ coupon.code }}</b> applied!</div>
+                    {% endif %}
+                </div>
+                <div class="cart__total">
+                    <h6>Cart Total</h6>
+                    <ul>
+                        <li>Subtotal <span class="cart-subtotal">${{ subtotal|floatformat:2 }}</span></li>
+                        {% if discount and discount > 0 %}
+                        <li>Discount <span class="text-success">- ${{ discount|floatformat:2 }}</span></li>
+                        {% endif %}
+                        <li>Shipping <span>${{ shipping_price|floatformat:2 }}</span></li>
+                        <li>Total <span class="cart-total">${{ total|floatformat:2 }}</span></li>
+                    </ul>
+                    <a href="{% url 'core:checkout' %}" class="primary-btn">Complete Order</a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+<!-- Shopping Cart Section End -->
+
+<!-- Toast Notification -->
+<div id="toast" class="toast-notification"></div>
+
+<style>
+.toast-notification {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 15px 25px;
+    background: #7fad39;
+    color: white;
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 1000;
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+.toast-notification.show {
+    transform: translateY(0);
+    opacity: 1;
+}
+.toast-notification.error {
+    background: #f44336;
+}
+.loading-state {
+    opacity: 0.7;
+    pointer-events: none;
+}
+.pro-qty-2 .qtybtn {
+    cursor: pointer;
+    user-select: none;
+}
+@media (max-width: 768px) {
+    .shopping__cart__table table {
+        display: block;
+        overflow-x: auto;
+    }
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    const csrftoken = getCookie('csrftoken');
+
+    function showToast(message, isError = false) {
+        const toast = $('#toast');
+        toast.text(message);
+        toast.removeClass('error');
+        if (isError) {
+            toast.addClass('error');
+        }
+        toast.addClass('show');
+        setTimeout(() => {
+            toast.removeClass('show');
+        }, 3000);
+    }
+
+    $('.pro-qty-2 .qtybtn').on('click', function() {
+        const input = $(this).siblings('.quantity-input');
+        let quantity = parseInt(input.val()) || 1;
+
+        if ($(this).hasClass('inc')) {
+            quantity = quantity + 1;
+        } else {
+            if (quantity > 1) {
+                quantity = quantity - 1;
+            } else {
+                quantity = 1; // تأكد أن الكمية لا تقل عن 1
+            }
+        }
+        
+        input.val(quantity);
+        // إطلاق حدث change يدوياً بعد تحديث القيمة
+        input.trigger('change');
+    });
+
+    $('.quantity-input').on('change', function() {
+        const itemId = $(this).data('item-id');
+        const newQuantity = parseInt($(this).val()) || 1;
+        const maxQuantity = parseInt($(this).attr('max')) || 99;
+        const price = parseFloat($(this).closest('tr').find('.cart__price').first().text().replace('$', ''));
+
+        // تأكد أن الكمية لا تقل عن 1
+        if (newQuantity < 1) {
+            $(this).val(1);
+            return;
+        }
+
+        if (newQuantity > maxQuantity) {
+            $(this).val(maxQuantity);
+            showToast(`Only ${maxQuantity} available` , true);
+            return;
+        }
+
+        const row = $(this).closest('tr');
+        row.addClass('loading-state');
+
+        $.ajax({
+            url: `/cart/update/${itemId}/`,
+            method: 'POST',
+            headers: {'X-CSRFToken': csrftoken},
+            data: { quantity: newQuantity },
+            success: function(response) {
+                if (response.success) {
+                    // تحديث السعر الإجمالي للمنتج
+                    row.find('.item-total').text('$' + response.item_total.toFixed(2));
+                    // تحديث القيم الإجمالية
+                    $('.cart-subtotal').text('$' + response.subtotal.toFixed(2));
+                    if (response.discount && response.discount > 0) {
+                        if ($('.cart__total li:contains("Discount")').length) {
+                            $('.cart__total li:contains("Discount") span').text('- $' + response.discount.toFixed(2));
+                        } else {
+                            $('.cart__total ul').prepend('<li>Discount <span class="text-success">- $' + response.discount.toFixed(2) + '</span></li>');
+                        }
+                    } else {
+                        $('.cart__total li:contains("Discount")').remove();
+                    }
+                    $('.cart__total li:contains("Shipping") span').text('$' + response.shipping_price.toFixed(2));
+                    $('.cart-total').text('$' + response.total.toFixed(2));
+                    showToast('Quantity updated successfully');
+                } else {
+                    showToast(response.message || 'Error updating quantity', true);
+                }
+            },
+            error: function(xhr) {
+                let message = 'Error updating quantity';
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    message = xhr.responseJSON.message;
+                }
+                showToast(message, true);
+            },
+            complete: function() {
+                row.removeClass('loading-state');
+            }
+        });
+    });
+
+    $('.remove-item').on('click', function() {
+        if (!confirm('Are you sure you want to remove this item from your cart?')) {
+            return;
+        }
+
+        const itemId = $(this).data('item-id');
+        const row = $(this).closest('tr');
+        row.addClass('loading-state');
+
+        $.ajax({
+            url: `/cart/remove/${itemId}/`,
+            method: 'POST',
+            headers: {'X-CSRFToken': csrftoken},
+            success: function(response) {
+                if (response.success) {
+                    showToast('Item removed from cart');
+                    row.fadeOut(300, function() {
+                        $(this).remove();
+                        $('.cart-subtotal').text('$' + response.subtotal.toFixed(2));
+                        if (response.discount && response.discount > 0) {
+                            if ($('.cart__total li:contains("Discount")').length) {
+                                $('.cart__total li:contains("Discount") span').text('- $' + response.discount.toFixed(2));
+                            } else {
+                                $('.cart__total ul').prepend('<li>Discount <span class="text-success">- $' + response.discount.toFixed(2) + '</span></li>');
+                            }
+                        } else {
+                            $('.cart__total li:contains("Discount")').remove();
+                        }
+                        $('.cart__total li:contains("Shipping") span').text('$' + response.shipping_price.toFixed(2));
+                        $('.cart-total').text('$' + response.total.toFixed(2));
+                        if ($('tbody tr').length === 0) {
+                            location.reload();
+                        }
+                    });
+                } else {
+                    showToast(response.message || 'Error removing item', true);
+                }
+            },
+            error: function(xhr) {
+                console.error('Error removing item:', xhr);
+                showToast('Error removing item. Please try again.', true);
+                row.removeClass('loading-state');
+            }
+        });
+    });
+
+    $('#update-cart').on('click', function(e) {
+        e.preventDefault();
+        const btn = $(this);
+        const btnText = btn.find('.btn-text');
+        const spinner = btn.find('.loading-spinner');
+
+        btnText.hide();
+        spinner.show();
+
+        $('.quantity-input').trigger('change');
+
+        setTimeout(() => {
+            spinner.hide();
+            btnText.show();
+            showToast('Cart updated successfully');
+        }, 1000);
+    });
+});
+</script>
+
+{% endblock %}
