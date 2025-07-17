@@ -37,11 +37,26 @@
                 <div class="product__item__pic set-bg" data-setbg="{% static 'img/product/default.jpg' %}">
                 {% endif %}
                     <span class="label">NEW</span>
-                    <ul class="product__hover">
-                        <li><a href="#"><img src="{% static 'img/icon/heart.png' %}" alt=""></a></li>
-                        <li><a href="#"><img src="{% static 'img/icon/compare.png' %}" alt=""> <span>Compare</span></a></li>
-                        <li><a href="#"><img src="{% static 'img/icon/search.png' %}" alt=""></a></li>
-                    </ul>
+                                    <ul class="product__hover">
+                                        <li>
+                                            {% if user.is_authenticated %}
+                                                {% if product.id in wishlist_product_ids %}
+                                                    <a href="{% url 'core:remove_from_wishlist' product.id %}" title="Remove from Wishlist">
+                                                        <i class="fa fa-heart" style="color:#e74c3c; font-size:22px;"></i>
+                                                    </a>
+                                                {% else %}
+                                                    <a href="{% url 'core:add_to_wishlist' product.id %}" title="Add to Wishlist">
+                                                        <i class="fa fa-heart-o" style="color:#888; font-size:22px;"></i>
+                                                    </a>
+                                                {% endif %}
+                                            {% else %}
+                                                <a href="{% url 'login' %}" title="Login to use Wishlist">
+                                                    <i class="fa fa-heart-o" style="color:#888; font-size:22px;"></i>
+                                                </a>
+                                            {% endif %}
+                                        </li>
+
+                                    </ul>
                 </div>
                 <div class="product__item__text">
                     <h6>{{ product.title }}</h6>

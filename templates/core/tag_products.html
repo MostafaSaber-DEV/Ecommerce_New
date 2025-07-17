@@ -5,16 +5,21 @@
 <section class="shop spad">
     <div class="container">
         <div class="row">
-            <div class="col-lg-3">
+           <div class="col-lg-3">
                 <div class="shop__sidebar">
+                    <!-- Search Form -->
                     <div class="shop__sidebar__search">
                         <form action="#">
                             <input type="text" placeholder="Search...">
                             <button type="submit"><span class="icon_search"></span></button>
                         </form>
                     </div>
+
+                    <!-- Filter Accordion -->
                     <div class="shop__sidebar__accordion">
                         <div class="accordion" id="accordionExample">
+                            
+                            <!-- Categories Filter -->
                             <div class="card">
                                 <div class="card-heading">
                                     <a data-toggle="collapse" data-target="#collapseOne">Categories</a>
@@ -23,129 +28,79 @@
                                     <div class="card-body">
                                         <div class="shop__sidebar__categories">
                                             <ul class="nice-scroll">
-                                                <li><a href="#">Men (20)</a></li>
-                                                <li><a href="#">Women (20)</a></li>
-                                                <li><a href="#">Bags (20)</a></li>
-                                                <li><a href="#">Clothing (20)</a></li>
-                                                <li><a href="#">Shoes (20)</a></li>
-                                                <li><a href="#">Accessories (20)</a></li>
-                                                <li><a href="#">Kids (20)</a></li>
-                                                <li><a href="#">Kids (20)</a></li>
-                                                <li><a href="#">Kids (20)</a></li>
+                                                {% if categories %}
+                                                    {% for category in categories %}
+                                                        <li>
+                                                            <a href="{% url 'core:category_product' category.cid %}">
+                                                                {{ category.title }}
+                                                                <span class="badge">({{ category.product_count }})</span>
+                                                            </a>
+                                                        </li>
+                                                    {% endfor %}
+                                                {% else %}
+                                                    <li><a href="#">No categories available</a></li>
+                                                {% endif %}
                                             </ul>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+
+                            <!-- Brand Filter -->
+
+
+
+                            <!-- Price Filter -->
                             <div class="card">
                                 <div class="card-heading">
-                                    <a data-toggle="collapse" data-target="#collapseTwo">Branding</a>
-                                </div>
-                                <div id="collapseTwo" class="collapse show" data-parent="#accordionExample">
-                                    <div class="card-body">
-                                        <div class="shop__sidebar__brand">
-                                            <ul>
-                                                <li><a href="#">Louis Vuitton</a></li>
-                                                <li><a href="#">Chanel</a></li>
-                                                <li><a href="#">Hermes</a></li>
-                                                <li><a href="#">Gucci</a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card">
-                                <div class="card-heading">
-                                    <a data-toggle="collapse" data-target="#collapseThree">Filter Price</a>
+                                    <a data-toggle="collapse" data-target="#collapseThree">Price</a>
                                 </div>
                                 <div id="collapseThree" class="collapse show" data-parent="#accordionExample">
                                     <div class="card-body">
                                         <div class="shop__sidebar__price">
                                             <ul>
-                                                <li><a href="#">EGP 0.00 - EGP 50.00</a></li>
-                                                <li><a href="#">EGP 50.00 - EGP 100.00</a></li>
-                                                <li><a href="#">EGP 100.00 - EGP 150.00</a></li>
-                                                <li><a href="#">EGP 150.00 - EGP 200.00</a></li>
-                                                <li><a href="#">EGP 200.00 - EGP 250.00</a></li>
-                                                <li><a href="#">250.00+</a></li>
+                                                <li>
+                                                    <a href="?price=0-50{% if category_id %}&category={{ category_id }}{% endif %}{% if request.GET.tag %}&tag={{ request.GET.tag }}{% endif %}{% if request.GET.vendor %}&vendor={{ request.GET.vendor }}{% endif %}">
+                                                        EGP 0.00 - EGP 50.00
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="?price=50-100{% if category_id %}&category={{ category_id }}{% endif %}{% if request.GET.tag %}&tag={{ request.GET.tag }}{% endif %}{% if request.GET.vendor %}&vendor={{ request.GET.vendor }}{% endif %}">
+                                                        EGP 50.00 - EGP 100.00
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="?price=100-150{% if category_id %}&category={{ category_id }}{% endif %}{% if request.GET.tag %}&tag={{ request.GET.tag }}{% endif %}{% if request.GET.vendor %}&vendor={{ request.GET.vendor }}{% endif %}">
+                                                        EGP 100.00 - EGP 150.00
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="?price=150-200{% if category_id %}&category={{ category_id }}{% endif %}{% if request.GET.tag %}&tag={{ request.GET.tag }}{% endif %}{% if request.GET.vendor %}&vendor={{ request.GET.vendor }}{% endif %}">
+                                                        EGP 150.00 - EGP 200.00
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="?price=200-250{% if category_id %}&category={{ category_id }}{% endif %}{% if request.GET.tag %}&tag={{ request.GET.tag }}{% endif %}{% if request.GET.vendor %}&vendor={{ request.GET.vendor }}{% endif %}">
+                                                        EGP 200.00 - EGP 250.00
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="?price=250-{% if category_id %}&category={{ category_id }}{% endif %}{% if request.GET.tag %}&tag={{ request.GET.tag }}{% endif %}{% if request.GET.vendor %}&vendor={{ request.GET.vendor }}{% endif %}">
+                                                        EGP 250.00+
+                                                    </a>
+                                                </li>
                                             </ul>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="card">
-                                <div class="card-heading">
-                                    <a data-toggle="collapse" data-target="#collapseFour">Size</a>
-                                </div>
-                                <div id="collapseFour" class="collapse show" data-parent="#accordionExample">
-                                    <div class="card-body">
-                                        <div class="shop__sidebar__size">
-                                            <label for="xs">xs
-                                                <input type="radio" id="xs">
-                                            </label>
-                                            <label for="sm">s
-                                                <input type="radio" id="sm">
-                                            </label>
-                                            <label for="md">m
-                                                <input type="radio" id="md">
-                                            </label>
-                                            <label for="xl">xl
-                                                <input type="radio" id="xl">
-                                            </label>
-                                            <label for="2xl">2xl
-                                                <input type="radio" id="2xl">
-                                            </label>
-                                            <label for="xxl">xxl
-                                                <input type="radio" id="xxl">
-                                            </label>
-                                            <label for="3xl">3xl
-                                                <input type="radio" id="3xl">
-                                            </label>
-                                            <label for="4xl">4xl
-                                                <input type="radio" id="4xl">
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card">
-                                <div class="card-heading">
-                                    <a data-toggle="collapse" data-target="#collapseFive">Colors</a>
-                                </div>
-                                <div id="collapseFive" class="collapse show" data-parent="#accordionExample">
-                                    <div class="card-body">
-                                        <div class="shop__sidebar__color">
-                                            <label class="c-1" for="sp-1">
-                                                <input type="radio" id="sp-1">
-                                            </label>
-                                            <label class="c-2" for="sp-2">
-                                                <input type="radio" id="sp-2">
-                                            </label>
-                                            <label class="c-3" for="sp-3">
-                                                <input type="radio" id="sp-3">
-                                            </label>
-                                            <label class="c-4" for="sp-4">
-                                                <input type="radio" id="sp-4">
-                                            </label>
-                                            <label class="c-5" for="sp-5">
-                                                <input type="radio" id="sp-5">
-                                            </label>
-                                            <label class="c-6" for="sp-6">
-                                                <input type="radio" id="sp-6">
-                                            </label>
-                                            <label class="c-7" for="sp-7">
-                                                <input type="radio" id="sp-7">
-                                            </label>
-                                            <label class="c-8" for="sp-8">
-                                                <input type="radio" id="sp-8">
-                                            </label>
-                                            <label class="c-9" for="sp-9">
-                                                <input type="radio" id="sp-9">
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+
+                            <!-- Size Filter -->
+
+
+
+
+                            <!-- Tags Filter -->
                             <div class="card">
                                 <div class="card-heading">
                                     <a data-toggle="collapse" data-target="#collapseSix">Tags</a>
@@ -153,13 +108,13 @@
                                 <div id="collapseSix" class="collapse show" data-parent="#accordionExample">
                                     <div class="card-body">
                                         <div class="shop__sidebar__tags">
-                                            <a href="#">Product</a>
-                                            <a href="#">Bags</a>
-                                            <a href="#">Shoes</a>
-                                            <a href="#">Fashio</a>
-                                            <a href="#">Clothing</a>
-                                            <a href="#">Hats</a>
-                                            <a href="#">Accessories</a>
+                                            {% if tags %}
+                                                {% for tag in tags %}
+                                                    <a href="?tag={{ tag.slug }}" class="badge bg-dark text-white me-1 mb-1">{{ tag.name }}</a>
+                                                {% endfor %}
+                                            {% else %}
+                                                <p class="text-muted">No tags available.</p>
+                                            {% endif %}
                                         </div>
                                     </div>
                                 </div>
@@ -168,26 +123,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-9">
-                <div class="shop__product__option">
-                    <div class="row">
-                        <div class="col-lg-6 col-md-6 col-sm-6">
-                            <div class="shop__product__option__left">
-                                <p>Showing {{ products.paginator.count }} results</p>
-                            </div>
-                        </div>
-                        <div class="col-lg-6 col-md-6 col-sm-6">
-                            <div class="shop__product__option__right">
-                                <p>Sort by Price:</p>
-                                <select>
-                                    <option value="">Low To High</option>
-                                    <option value="">EGP 0 - EGP 55</option>
-                                    <option value="">EGP 55 - EGP 100</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+
                 <div class="row">
                 {% for product in products %}
                 <div class="col-lg-4 col-md-6 col-sm-6">
@@ -198,11 +134,26 @@
                             {% elif product.is_new %}
                             <span class="label">New</span>
                             {% endif %}
-                            <ul class="product__hover">
-                                <li><a href="#"><img src="{% static 'img/icon/heart.png' %}" alt=""></a></li>
-                                <li><a href="#"><img src="{% static 'img/icon/compare.png' %}" alt=""> <span>Compare</span></a></li>
-                                <li><a href="#"><img src="{% static 'img/icon/search.png' %}" alt=""></a></li>
-                            </ul>
+                                    <ul class="product__hover">
+                                        <li>
+                                            {% if user.is_authenticated %}
+                                                {% if product.id in wishlist_product_ids %}
+                                                    <a href="{% url 'core:remove_from_wishlist' product.id %}" title="Remove from Wishlist">
+                                                        <i class="fa fa-heart" style="color:#e74c3c; font-size:22px;"></i>
+                                                    </a>
+                                                {% else %}
+                                                    <a href="{% url 'core:add_to_wishlist' product.id %}" title="Add to Wishlist">
+                                                        <i class="fa fa-heart-o" style="color:#888; font-size:22px;"></i>
+                                                    </a>
+                                                {% endif %}
+                                            {% else %}
+                                                <a href="{% url 'login' %}" title="Login to use Wishlist">
+                                                    <i class="fa fa-heart-o" style="color:#888; font-size:22px;"></i>
+                                                </a>
+                                            {% endif %}
+                                        </li>
+
+                                    </ul>
                         </div>
                         <div class="product__item__text">
                             <h6>{{ product.title }}</h6>
