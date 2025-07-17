@@ -12,7 +12,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # مفاتيح الأمان
 SECRET_KEY = os.getenv('SECRET_KEY')  # تم نقله من الكود إلى .env
-DEBUG = False  # مهم للإنتاج
+DEBUG = True  # مهم للإنتاج
 
 ALLOWED_HOSTS = ["*"]
 
