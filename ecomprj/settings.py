@@ -39,11 +39,14 @@ INSTALLED_APPS = [
     'cloudinary_storage',
 ]
 
-CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': 'dn3gsluze',
-    'API_KEY': '826669649856336',
-    'API_SECRET': 'jCL0x2KvHaZ6fOJ3QcJzzWpJz8A',
-}
+
+
+cloudinary.config( 
+  cloud_name = config('CLOUDINARY_CLOUD_NAME'), 
+  api_key = config('CLOUDINARY_API_KEY'), 
+  api_secret = config('CLOUDINARY_API_SECRET') 
+)
+
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
