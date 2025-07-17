@@ -16,3 +16,6 @@ whitenoise==6.9.0
 gunicorn==21.2.0              # تم تحديد الإصدار
 python-dotenv==1.0.1
 django-cloudinary-storage
+cloudinary
+django-cloudinary-storage
+

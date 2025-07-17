@@ -1,7 +1,7 @@
 import cloudinary
 import cloudinary.uploader
 import cloudinary.api
-
+from decouple import config
 
 from pathlib import Path
 import os
