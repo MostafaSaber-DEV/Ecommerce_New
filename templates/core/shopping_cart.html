@@ -51,7 +51,7 @@
                                                 {% if item.size %}<span>المقاس: {{ item.size }}</span>{% endif %}
                                             </div>
                                         {% endif %}
-                                        <h5>${{ item.product.price }}</h5>
+                                        <h5>EGP {{ item.product.price }}</h5>
                                     </div>
                                 </td>
                                 <td class="quantity__item">
@@ -68,8 +68,8 @@
                                         {% endif %}
                                     </div>
                                 </td>
-                                <td class="cart__price">${{ item.product.price }}</td>
-                                <td class="cart__price item-total">${{ item.total_price }}</td>
+                                <td class="cart__price">EGP {{ item.product.price }}</td>
+                                <td class="cart__price item-total">EGP {{ item.total_price }}</td>
                                 <td class="cart__close">
                                     <i class="fa fa-close remove-item" data-item-id="{{ item.id }}"></i>
                                 </td>
@@ -126,12 +126,12 @@
                 <div class="cart__total">
                     <h6>Cart Total</h6>
                     <ul>
-                        <li>Subtotal <span class="cart-subtotal">${{ subtotal|floatformat:2 }}</span></li>
+                        <li>Subtotal <span class="cart-subtotal">EGP {{ subtotal|floatformat:2 }}</span></li>
                         {% if discount and discount > 0 %}
-                        <li>Discount <span class="text-success">- ${{ discount|floatformat:2 }}</span></li>
+                        <li>Discount <span class="text-success">- EGP {{ discount|floatformat:2 }}</span></li>
                         {% endif %}
-                        <li>Shipping <span>${{ shipping_price|floatformat:2 }}</span></li>
-                        <li>Total <span class="cart-total">${{ total|floatformat:2 }}</span></li>
+                        <li>Shipping <span>EGP {{ shipping_price|floatformat:2 }}</span></li>
+                        <li>Total <span class="cart-total">EGP {{ total|floatformat:2 }}</span></li>
                     </ul>
                     <a href="{% url 'core:checkout' %}" class="primary-btn">Complete Order</a>
                 </div>
@@ -187,7 +187,7 @@
 {% block scripts %}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-$(document).ready(function() {
+EGP (document).ready(function() {
     function getCookie(name) {
         let cookieValue = null;
         if (document.cookie && document.cookie !== '') {
@@ -205,7 +205,7 @@ $(document).ready(function() {
     const csrftoken = getCookie('csrftoken');
 
     function showToast(message, isError = false) {
-        const toast = $('#toast');
+        const toast = EGP ('#toast');
         toast.text(message);
         toast.removeClass('error');
         if (isError) {
@@ -217,11 +217,11 @@ $(document).ready(function() {
         }, 3000);
     }
 
-    $('.pro-qty-2 .qtybtn').on('click', function() {
-        const input = $(this).siblings('.quantity-input');
+    EGP ('.pro-qty-2 .qtybtn').on('click', function() {
+        const input = EGP (this).siblings('.quantity-input');
         let quantity = parseInt(input.val()) || 1;
 
-        if ($(this).hasClass('inc')) {
+        if (EGP (this).hasClass('inc')) {
             quantity = quantity + 1;
         } else {
             if (quantity > 1) {
@@ -236,49 +236,49 @@ $(document).ready(function() {
         input.trigger('change');
     });
 
-    $('.quantity-input').on('change', function() {
-        const itemId = $(this).data('item-id');
-        const newQuantity = parseInt($(this).val()) || 1;
-        const maxQuantity = parseInt($(this).attr('max')) || 99;
-        const price = parseFloat($(this).closest('tr').find('.cart__price').first().text().replace('$', ''));
+    EGP ('.quantity-input').on('change', function() {
+        const itemId = EGP (this).data('item-id');
+        const newQuantity = parseInt(EGP (this).val()) || 1;
+        const maxQuantity = parseInt(EGP (this).attr('max')) || 99;
+        const price = parseFloat(EGP (this).closest('tr').find('.cart__price').first().text().replace('EGP ', ''));
 
         // تأكد أن الكمية لا تقل عن 1
         if (newQuantity < 1) {
-            $(this).val(1);
+            EGP (this).val(1);
             return;
         }
 
         if (newQuantity > maxQuantity) {
-            $(this).val(maxQuantity);
-            showToast(`Only ${maxQuantity} available` , true);
+            EGP (this).val(maxQuantity);
+            showToast(`Only EGP {maxQuantity} available` , true);
             return;
         }
 
-        const row = $(this).closest('tr');
+        const row = EGP (this).closest('tr');
         row.addClass('loading-state');
 
-        $.ajax({
-            url: `/cart/update/${itemId}/`,
+        EGP .ajax({
+            url: `/cart/update/EGP {itemId}/`,
             method: 'POST',
             headers: {'X-CSRFToken': csrftoken},
             data: { quantity: newQuantity },
             success: function(response) {
                 if (response.success) {
                     // تحديث السعر الإجمالي للمنتج
-                    row.find('.item-total').text('$' + response.item_total.toFixed(2));
+                    row.find('.item-total').text('EGP ' + response.item_total.toFixed(2));
                     // تحديث القيم الإجمالية
-                    $('.cart-subtotal').text('$' + response.subtotal.toFixed(2));
+                    EGP ('.cart-subtotal').text('EGP ' + response.subtotal.toFixed(2));
                     if (response.discount && response.discount > 0) {
-                        if ($('.cart__total li:contains("Discount")').length) {
-                            $('.cart__total li:contains("Discount") span').text('- $' + response.discount.toFixed(2));
+                        if (EGP ('.cart__total li:contains("Discount")').length) {
+                            EGP ('.cart__total li:contains("Discount") span').text('- EGP ' + response.discount.toFixed(2));
                         } else {
-                            $('.cart__total ul').prepend('<li>Discount <span class="text-success">- $' + response.discount.toFixed(2) + '</span></li>');
+                            EGP ('.cart__total ul').prepend('<li>Discount <span class="text-success">- EGP ' + response.discount.toFixed(2) + '</span></li>');
                         }
                     } else {
-                        $('.cart__total li:contains("Discount")').remove();
+                        EGP ('.cart__total li:contains("Discount")').remove();
                     }
-                    $('.cart__total li:contains("Shipping") span').text('$' + response.shipping_price.toFixed(2));
-                    $('.cart-total').text('$' + response.total.toFixed(2));
+                    EGP ('.cart__total li:contains("Shipping") span').text('EGP ' + response.shipping_price.toFixed(2));
+                    EGP ('.cart-total').text('EGP ' + response.total.toFixed(2));
                     showToast('Quantity updated successfully');
                 } else {
                     showToast(response.message || 'Error updating quantity', true);
@@ -297,37 +297,37 @@ $(document).ready(function() {
         });
     });
 
-    $('.remove-item').on('click', function() {
+    EGP ('.remove-item').on('click', function() {
         if (!confirm('Are you sure you want to remove this item from your cart?')) {
             return;
         }
 
-        const itemId = $(this).data('item-id');
-        const row = $(this).closest('tr');
+        const itemId = EGP (this).data('item-id');
+        const row = EGP (this).closest('tr');
         row.addClass('loading-state');
 
-        $.ajax({
-            url: `/cart/remove/${itemId}/`,
+        EGP .ajax({
+            url: `/cart/remove/EGP {itemId}/`,
             method: 'POST',
             headers: {'X-CSRFToken': csrftoken},
             success: function(response) {
                 if (response.success) {
                     showToast('Item removed from cart');
                     row.fadeOut(300, function() {
-                        $(this).remove();
-                        $('.cart-subtotal').text('$' + response.subtotal.toFixed(2));
+                        EGP (this).remove();
+                        EGP ('.cart-subtotal').text('EGP ' + response.subtotal.toFixed(2));
                         if (response.discount && response.discount > 0) {
-                            if ($('.cart__total li:contains("Discount")').length) {
-                                $('.cart__total li:contains("Discount") span').text('- $' + response.discount.toFixed(2));
+                            if (EGP ('.cart__total li:contains("Discount")').length) {
+                                EGP ('.cart__total li:contains("Discount") span').text('- EGP ' + response.discount.toFixed(2));
                             } else {
-                                $('.cart__total ul').prepend('<li>Discount <span class="text-success">- $' + response.discount.toFixed(2) + '</span></li>');
+                                EGP ('.cart__total ul').prepend('<li>Discount <span class="text-success">- EGP ' + response.discount.toFixed(2) + '</span></li>');
                             }
                         } else {
-                            $('.cart__total li:contains("Discount")').remove();
+                            EGP ('.cart__total li:contains("Discount")').remove();
                         }
-                        $('.cart__total li:contains("Shipping") span').text('$' + response.shipping_price.toFixed(2));
-                        $('.cart-total').text('$' + response.total.toFixed(2));
-                        if ($('tbody tr').length === 0) {
+                        EGP ('.cart__total li:contains("Shipping") span').text('EGP ' + response.shipping_price.toFixed(2));
+                        EGP ('.cart-total').text('EGP ' + response.total.toFixed(2));
+                        if (EGP ('tbody tr').length === 0) {
                             location.reload();
                         }
                     });
@@ -343,16 +343,16 @@ $(document).ready(function() {
         });
     });
 
-    $('#update-cart').on('click', function(e) {
+    EGP ('#update-cart').on('click', function(e) {
         e.preventDefault();
-        const btn = $(this);
+        const btn = EGP (this);
         const btnText = btn.find('.btn-text');
         const spinner = btn.find('.loading-spinner');
 
         btnText.hide();
         spinner.show();
 
-        $('.quantity-input').trigger('change');
+        EGP ('.quantity-input').trigger('change');
 
         setTimeout(() => {
             spinner.hide();

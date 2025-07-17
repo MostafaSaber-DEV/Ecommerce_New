@@ -14,7 +14,7 @@
                             <h5 class="card-title">
                                 <a href="{% url 'core:product_details' item.product.pid %}" class="text-dark">{{ item.product.title }}</a>
                             </h5>
-                            <p class="card-text mb-2">${{ item.product.price }}</p>
+                            <p class="card-text mb-2">EGP {{ item.product.price }}</p>
                             <a href="{% url 'core:remove_from_wishlist' item.product.id %}" class="btn btn-outline-danger btn-sm">Remove</a>
                         </div>
                     </div>

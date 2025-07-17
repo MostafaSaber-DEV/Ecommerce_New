@@ -61,7 +61,7 @@
                         {% endfor %}
                         <span> - {{ product.reviews.count }} تقييم</span>
                     </div>
-                    <h3>${{ product.price }} {% if product.old_price %}<span>${{ product.old_price }}</span>{% endif %}</h3>
+                    <h3>EGP {{ product.price }} {% if product.old_price %}<span>EGP {{ product.old_price }}</span>{% endif %}</h3>
                     <p>{{ product.description|safe }}</p>
                     
                     <form id="add-to-cart-form" method="POST" action="{% url 'core:add_to_cart' product.pid %}">
@@ -229,7 +229,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             <i class="fa fa-star-o"></i>
                             <i class="fa fa-star-o"></i>
                         </div>
-                        <h5>${{ product.price }}</h5>
+                        <h5>EGP {{ product.price }}</h5>
                         <div class="product__color__select">
                             <label for="pc-1">
                                 <input type="radio" id="pc-1">

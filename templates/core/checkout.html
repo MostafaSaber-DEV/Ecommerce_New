@@ -103,35 +103,22 @@
                             <div class="checkout__order__products">Product <span>Total</span></div>
                             <ul class="checkout__total__products">
                                 {% for item in cart_items %}
-                                <li>{{ forloop.counter }}. {{ item.product.title }} <span>${{ item.total_price }}</span></li>
+                                <li>{{ forloop.counter }}. {{ item.product.title }} <span>EGP {{ item.total_price }}</span></li>
                                 {% endfor %}
                             </ul>
                             <ul class="checkout__total__all">
-                                <li>Subtotal <span>${{ subtotal|floatformat:2 }}</span></li>
+                                <li>Subtotal <span>EGP {{ subtotal|floatformat:2 }}</span></li>
                                 {% if discount and discount > 0 %}
-                                <li>Discount <span class="text-success">- ${{ discount|floatformat:2 }}</span></li>
+                                <li>Discount <span class="text-success">- EGP {{ discount|floatformat:2 }}</span></li>
                                 {% endif %}
-                                <li>Shipping <span>${{ shipping_cost|floatformat:2 }}</span></li>
-                                <li>Tax <span>${{ tax_amount|floatformat:2 }}</span></li>
-                                <li>Total <span>${{ total|floatformat:2 }}</span></li>
+                                <li>Shipping <span>EGP {{ shipping_cost|floatformat:2 }}</span></li>
+                                <li>Tax <span>EGP {{ tax_amount|floatformat:2 }}</span></li>
+                                <li>Total <span>EGP {{ total|floatformat:2 }}</span></li>
                             </ul>
                             {% if coupon %}
                             <div class="alert alert-success mt-2">Coupon <b>{{ coupon.code }}</b> applied!</div>
                             {% endif %}
-                            <div class="checkout__input__checkbox">
-                                <label for="payment_method">
-                                    Direct Bank Transfer
-                                    <input type="radio" id="payment_method" name="payment_method" value="bank_transfer" checked>
-                                    <span class="checkmark"></span>
-                                </label>
-                            </div>
-                            <div class="checkout__input__checkbox">
-                                <label for="paypal">
-                                    Paypal
-                                    <input type="radio" id="paypal" name="payment_method" value="paypal">
-                                    <span class="checkmark"></span>
-                                </label>
-                            </div>
+
                             <div class="checkout__input__checkbox">
                                 <label for="cash_on_delivery">
                                     Cash on Delivery
@@ -153,15 +140,15 @@
 
 {% block scripts %}
 <script>
-$(document).ready(function() {
+EGP (document).ready(function() {
     // Show/hide password field based on create account checkbox
-    $('#create_account').change(function() {
+    EGP ('#create_account').change(function() {
         if(this.checked) {
-            $('#password_field').show();
-            $('#password_field input').attr('required', true);
+            EGP ('#password_field').show();
+            EGP ('#password_field input').attr('required', true);
         } else {
-            $('#password_field').hide();
-            $('#password_field input').attr('required', false);
+            EGP ('#password_field').hide();
+            EGP ('#password_field input').attr('required', false);
         }
     });
 });

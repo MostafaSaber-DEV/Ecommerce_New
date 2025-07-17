@@ -62,11 +62,11 @@
                                     <div class="card-body">
                                         <div class="shop__sidebar__price">
                                             <ul>
-                                                <li><a href="#">$0.00 - $50.00</a></li>
-                                                <li><a href="#">$50.00 - $100.00</a></li>
-                                                <li><a href="#">$100.00 - $150.00</a></li>
-                                                <li><a href="#">$150.00 - $200.00</a></li>
-                                                <li><a href="#">$200.00 - $250.00</a></li>
+                                                <li><a href="#">EGP 0.00 - EGP 50.00</a></li>
+                                                <li><a href="#">EGP 50.00 - EGP 100.00</a></li>
+                                                <li><a href="#">EGP 100.00 - EGP 150.00</a></li>
+                                                <li><a href="#">EGP 150.00 - EGP 200.00</a></li>
+                                                <li><a href="#">EGP 200.00 - EGP 250.00</a></li>
                                                 <li><a href="#">250.00+</a></li>
                                             </ul>
                                         </div>
@@ -181,8 +181,8 @@
                                 <p>Sort by Price:</p>
                                 <select>
                                     <option value="">Low To High</option>
-                                    <option value="">$0 - $55</option>
-                                    <option value="">$55 - $100</option>
+                                    <option value="">EGP 0 - EGP 55</option>
+                                    <option value="">EGP 55 - EGP 100</option>
                                 </select>
                             </div>
                         </div>
@@ -219,7 +219,7 @@
                                 {% endfor %}
                                 <span> - {{ product.reviews.count }} تقييم</span>
                             </div>
-                            <h5>${{ product.price }}</h5>
+                            <h5>EGP {{ product.price }}</h5>
                             <div class="product__color__select">
                                 <label><input type="radio"></label>
                                 <label class="active black"><input type="radio"></label>

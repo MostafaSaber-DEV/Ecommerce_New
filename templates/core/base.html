@@ -71,7 +71,7 @@
             <a href="#" class="search-switch"><img src="{% static 'img/icon/search.png' %}" alt=""></a>
             <a href="#"><img src="{% static 'img/icon/heart.png' %}" alt=""></a>
             <a href="{% url 'core:cart_view' %}"><img src="{% static 'img/icon/cart.png' %}" alt="Cart"> <span class="navbar-cart-count">{% if cart %}{{ cart.items.count }}{% else %}0{% endif %}</span></a>
-            <div class="price navbar-cart-total">${% if cart %}{{ cart.total_price|floatformat:2 }}{% else %}0.00{% endif %}</div>
+            <div class="price navbar-cart-total">EGP {% if cart %}{{ cart.total_price|floatformat:2 }}{% else %}0.00{% endif %}</div>
         </div>
         <div id="mobile-menu-wrap"></div>
         <div class="offcanvas__text">
@@ -168,7 +168,7 @@
             <i class="fa fa-heart"></i> Wishlist
         </a>
         <a href="{% url 'core:cart_view' %}"><img src="{% static 'img/icon/cart.png' %}" alt="Cart"> <span class="navbar-cart-count">{% if cart %}{{ cart.items.count }}{% else %}0{% endif %}</span></a>
-        <div class="price navbar-cart-total">${% if cart %}{{ cart.total_price|floatformat:2 }}{% else %}0.00{% endif %}</div>
+        <div class="price navbar-cart-total">EGP {% if cart %}{{ cart.total_price|floatformat:2 }}{% else %}0.00{% endif %}</div>
     </div>
 </div>
             </div>
@@ -320,7 +320,7 @@ function updateCartNavbar() {
         .then(response => response.json())
         .then(data => {
             document.querySelectorAll('.navbar-cart-count').forEach(e => e.textContent = data.count);
-            document.querySelectorAll('.navbar-cart-total').forEach(e => e.textContent = '$' + data.total);
+            document.querySelectorAll('.navbar-cart-total').forEach(e => e.textContent = 'EGP ' + data.total);
         });
 }
 // تحديث تلقائي كل 10 ثواني

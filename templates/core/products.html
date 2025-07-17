@@ -62,32 +62,32 @@
                                             <ul>
                                                 <li>
                                                     <a href="?price=0-50{% if category_id %}&category={{ category_id }}{% endif %}{% if request.GET.tag %}&tag={{ request.GET.tag }}{% endif %}{% if request.GET.vendor %}&vendor={{ request.GET.vendor }}{% endif %}">
-                                                        $0.00 - $50.00
+                                                        EGP 0.00 - EGP 50.00
                                                     </a>
                                                 </li>
                                                 <li>
                                                     <a href="?price=50-100{% if category_id %}&category={{ category_id }}{% endif %}{% if request.GET.tag %}&tag={{ request.GET.tag }}{% endif %}{% if request.GET.vendor %}&vendor={{ request.GET.vendor }}{% endif %}">
-                                                        $50.00 - $100.00
+                                                        EGP 50.00 - EGP 100.00
                                                     </a>
                                                 </li>
                                                 <li>
                                                     <a href="?price=100-150{% if category_id %}&category={{ category_id }}{% endif %}{% if request.GET.tag %}&tag={{ request.GET.tag }}{% endif %}{% if request.GET.vendor %}&vendor={{ request.GET.vendor }}{% endif %}">
-                                                        $100.00 - $150.00
+                                                        EGP 100.00 - EGP 150.00
                                                     </a>
                                                 </li>
                                                 <li>
                                                     <a href="?price=150-200{% if category_id %}&category={{ category_id }}{% endif %}{% if request.GET.tag %}&tag={{ request.GET.tag }}{% endif %}{% if request.GET.vendor %}&vendor={{ request.GET.vendor }}{% endif %}">
-                                                        $150.00 - $200.00
+                                                        EGP 150.00 - EGP 200.00
                                                     </a>
                                                 </li>
                                                 <li>
                                                     <a href="?price=200-250{% if category_id %}&category={{ category_id }}{% endif %}{% if request.GET.tag %}&tag={{ request.GET.tag }}{% endif %}{% if request.GET.vendor %}&vendor={{ request.GET.vendor }}{% endif %}">
-                                                        $200.00 - $250.00
+                                                        EGP 200.00 - EGP 250.00
                                                     </a>
                                                 </li>
                                                 <li>
                                                     <a href="?price=250-{% if category_id %}&category={{ category_id }}{% endif %}{% if request.GET.tag %}&tag={{ request.GET.tag }}{% endif %}{% if request.GET.vendor %}&vendor={{ request.GET.vendor }}{% endif %}">
-                                                        $250.00+
+                                                        EGP 250.00+
                                                     </a>
                                                 </li>
                                             </ul>
@@ -213,9 +213,9 @@
                                         <span> - {{ product.reviews.count }} تقييم</span>
                                     </div>
                                     <h5>
-                                        ${{ product.price }}
+                                        EGP {{ product.price }}
                                         {% if product.old_price and product.old_price > product.price %}
-                                            <span style="color:#b7b7b7;font-size:16px;text-decoration:line-through;margin-left:8px;">${{ product.old_price }}</span>
+                                            <span style="color:#b7b7b7;font-size:16px;text-decoration:line-through;margin-left:8px;">EGP {{ product.old_price }}</span>
                                         {% endif %}
                                     </h5>
                                     <div class="product__color__select">

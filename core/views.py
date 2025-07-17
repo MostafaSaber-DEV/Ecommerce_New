@@ -617,7 +617,7 @@ def checkout_view(request):
             if 'applied_coupon' in request.session:
                 del request.session['applied_coupon']
 
-            # إرسال الإيميل هنا فقط بعد نجاح الطلب
+            # إرسال الإيميل بعد نجاح الطلب فقط
             customer_name = request.user.get_full_name() or request.user.username
             customer_email = request.user.email
             customer_phone = request.POST.get('phone')
@@ -631,18 +631,9 @@ def checkout_view(request):
                     f"Unit Price: {item.price} | Total: {item.price * item.quantity}\n"
                 )
 
-            coupon_code = request.session.get('applied_coupon')
-            discount_line = ""
-            if coupon_code and coupon:
-                discount_line = f"\nDiscount Code Used: {coupon_code} | Value: {discount}\n"
-            else:
-                discount_line = "\nNo discount code used.\n"
-
+            discount_line = f"\nDiscount Code Used: {coupon_code} | Value: {discount}\n" if coupon_code and coupon else "\nNo discount code used.\n"
             total_line = f"\nOrder Total: {total}\n"
-
-            fraud_warning = (
-                "\n[Notice] Please verify the customer's phone and address before processing the order to prevent fraud."
-            )
+            fraud_warning = "\n[Notice] Please verify the customer's phone and address before processing the order to prevent fraud."
 
             order_details = f"""
 New Order Received!
@@ -679,58 +670,7 @@ Products:
             messages.error(request, f"Error: {str(e)}")
             return redirect('core:checkout')
 
-    # إرسال إيميل إشعار بالطلب الجديد
-    customer_name = request.user.get_full_name() or request.user.username
-    customer_email = request.user.email
-    customer_phone = request.POST.get('phone')
-    shipping_address = f"{request.POST.get('address')}, {request.POST.get('city')}, {request.POST.get('state')}, {request.POST.get('country')}, {request.POST.get('postcode')}"
-
-    product_lines = ""
-    for item in cart_items:
-        product_lines += (
-            f"- {item.product.title} | Quantity: {item.quantity} | "
-            f"Color: {item.color_name or '-'} | Size: {item.size or '-'} | "
-            f"Unit Price: {item.price} | Total: {item.price * item.quantity}\n"
-        )
-
-    coupon_code = request.session.get('applied_coupon')
-    discount_line = ""
-    if coupon_code and coupon:
-        discount_line = f"\nDiscount Code Used: {coupon_code} | Value: {discount}\n"
-    else:
-        discount_line = "\nNo discount code used.\n"
-
-    total_line = f"\nOrder Total: {total}\n"
-
-    fraud_warning = (
-        "\n[Notice] Please verify the customer's phone and address before processing the order to prevent fraud."
-    )
-
-    order_details = f"""
-New Order Received!
-
-Customer Name: {customer_name}
-Customer Email: {customer_email}
-Customer Phone: {customer_phone}
-
-Shipping Address:
-{shipping_address}
-
-Products:
-{product_lines}
-{discount_line}
-{total_line}
-{fraud_warning}
-"""
-
-    send_mail(
-        subject=f"New Order from {customer_name}",
-        message=order_details,
-        from_email=settings.DEFAULT_FROM_EMAIL,
-        recipient_list=['mostafasaberfareg@gmail.com'],
-        fail_silently=False,
-    )
-
+    # عرض صفحة الدفع (GET فقط)
     context = {
         'cart': cart,
         'cart_items': cart_items,
@@ -750,6 +690,7 @@ Products:
         'brand': BrandInfo.objects.first(),
     }
     return render(request, 'core/checkout.html', context)
+
 
 
 @login_required
