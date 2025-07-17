@@ -1,10 +1,9 @@
+# run_migrate.py
+
 import os
-import sys
-
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ecomprj1.settings")  # غيّر الاسم لو settings.py في مسار مختلف
-
 import django
-django.setup()
-
 from django.core.management import call_command
-call_command("migrate")
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ecomprj.settings')
+django.setup()
+call_command('migrate')

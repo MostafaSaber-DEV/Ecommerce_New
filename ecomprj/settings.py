@@ -7,8 +7,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # مفاتيح الأمان
 SECRET_KEY = os.getenv('SECRET_KEY')  # تم نقله من الكود إلى .env
-DEBUG = True
+DEBUG = False  # مهم للإنتاج
+
 ALLOWED_HOSTS = ["*"]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://*.railway.app"
+]
+
 
 # التطبيقات
 INSTALLED_APPS = [
@@ -152,6 +158,4 @@ EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
-CSRF_TRUSTED_ORIGINS = [
-    "https://ecommercenew-production.up.railway.app"
-]
+
