@@ -1,3 +1,8 @@
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+
+
 from pathlib import Path
 import os
 from dotenv import load_dotenv
@@ -24,13 +29,23 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
+    'django.contrib.staticfiles',  # ✅ خليه هنا فقط
     'core', 
     'userauths',
     'taggit',
     'ckeditor',
     'ckeditor_uploader',
+    'cloudinary',
+    'cloudinary_storage',
 ]
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': 'dn3gsluze',
+    'API_KEY': '826669649856336',
+    'API_SECRET': 'jCL0x2KvHaZ6fOJ3QcJzzWpJz8A',
+}
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 # ميدل وير
 MIDDLEWARE = [

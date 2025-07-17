@@ -13,6 +13,7 @@ from taggit.managers import TaggableManager
 from ckeditor_uploader.fields import RichTextUploadingField
 from django.utils import timezone
 import shortuuid
+from cloudinary.models import CloudinaryField
 
 STATUS_CHOICES = (
     ('drafted', _('Drafted')),
@@ -76,13 +77,8 @@ class Category(models.Model):
         verbose_name=_('Category ID')
     )
     title = models.CharField(max_length=100, unique=True, verbose_name=_('Title'))
-    image = models.ImageField(
-        upload_to='categories/',
-        blank=True,
-        null=True,
-        validators=[validate_image_size],
-        verbose_name=_('Image')
-    )
+    image = CloudinaryField('image', blank=True, null=True)
+
     is_active = models.BooleanField(default=True, verbose_name=_('Is Active'))
 
     class Meta:
@@ -124,13 +120,8 @@ class Vendor(TimeStampedModel):
     name = models.CharField(max_length=100, unique=True, verbose_name=_('Vendor Name'))
     email = models.EmailField(max_length=254, unique=True, verbose_name=_('Email Address'))
     phone = models.CharField(max_length=15, blank=True, null=True, verbose_name=_('Phone Number'))
-    image = models.ImageField(
-        upload_to=user_directory_path,
-        blank=True,
-        null=True,
-        validators=[validate_image_size],
-        verbose_name=_('Logo Image')
-    )
+    image = CloudinaryField('image', blank=True, null=True)
+
     description = RichTextUploadingField(blank=True, null=True, verbose_name=_('Description'))
     website = models.URLField(blank=True, null=True, verbose_name=_('Website URL'))
     address = models.TextField(blank=True, null=True, verbose_name=_('Business Address'))
@@ -239,13 +230,8 @@ class Product(TimeStampedModel):
     title = models.CharField(max_length=200, verbose_name=_('Title'))
     description = RichTextUploadingField(blank=True, null=True, verbose_name=_('Description'))
     specifications = models.TextField(blank=True, null=True, verbose_name=_('Specifications'))
-    image = models.ImageField(
-        upload_to=user_directory_path,
-        blank=True,
-        null=True,
-        validators=[validate_image_size],
-        verbose_name=_('Main Image')
-    )
+    image = CloudinaryField('image', blank=True, null=True)
+
     stock_quantity = models.PositiveIntegerField(
         default=0,
         validators=[MinValueValidator(0)],
@@ -345,11 +331,8 @@ class ProductImage(models.Model):
         related_name='additional_images',
         verbose_name=_('Product')
     )
-    image = models.ImageField(
-        upload_to=user_directory_path,
-        validators=[validate_image_size],
-        verbose_name=_('Image')
-    )
+    image = CloudinaryField('image', blank=True, null=True)
+
     date = models.DateTimeField(auto_now_add=True, verbose_name=_('Date Added'))
 
     def image_preview(self):
@@ -725,14 +708,14 @@ class BrandInfo(models.Model):
         blank=True,
         null=True
     )
-    logo = models.ImageField(
-        upload_to=brand_logo_upload_path,
+    logo = CloudinaryField(
+        resource_type='image',
         verbose_name=_("Logo"),
         blank=True,
         null=True
     )
-    favicon = models.ImageField(
-        upload_to='brand/favicon/',
+    favicon = CloudinaryField(
+        resource_type='image',
         verbose_name=_("Favicon"),
         blank=True,
         null=True
