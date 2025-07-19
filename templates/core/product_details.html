@@ -190,7 +190,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 {% elif not user.is_authenticated %}
-<div class="alert alert-info text-center my-4" style="max-width:600px;margin:auto;">يجب <a href="/login/">تسجيل الدخول</a> لتقييم المنتج.</div>
+<div class="alert alert-info text-center my-4" style="max-width:600px;margin:auto;">يجب <a href="{% url 'userauths:login_view' %}">تسجيل الدخول</a> لتقييم المنتج.</div>
 {% endif %}
 
 <!-- Related Products Section -->
